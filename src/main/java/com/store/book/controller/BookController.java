@@ -4,6 +4,7 @@ import com.store.book.dto.BookDto;
 import com.store.book.dto.BookSearchParameters;
 import com.store.book.dto.CreateBookRequestDto;
 import com.store.book.service.BookService;
+import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -34,7 +35,7 @@ public class BookController {
     }
 
     @PostMapping
-    public BookDto createBook(@RequestBody CreateBookRequestDto requestDto) {
+    public BookDto createBook(@RequestBody @Valid CreateBookRequestDto requestDto) {
         return bookService.save(requestDto);
     }
 
