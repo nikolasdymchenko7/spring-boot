@@ -51,7 +51,7 @@ public class BookController {
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     @Operation(summary = "Create a new book", description = "Create a new book")
     @ApiResponse(responseCode = "200", description = "Create new book",
@@ -74,9 +74,9 @@ public class BookController {
     @GetMapping("/search")
     @Operation(summary = "Books search",
             description = "Book search by: title, author, isbn, price")
-    public List<BookDto> search(Authentication authentication,
-                                BookSearchParameters searchParameters) {
-        return bookService.search(searchParameters);
+    public List<BookDto> search(BookSearchParameters searchParameters,
+                                Pageable pageable) {
+        return bookService.search(searchParameters, pageable);
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
