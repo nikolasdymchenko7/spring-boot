@@ -13,7 +13,6 @@ import jakarta.persistence.Table;
 import java.util.Collection;
 import java.util.Set;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
@@ -23,8 +22,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 @Entity
 @Data
-@ToString
-@NoArgsConstructor
 @SQLDelete(sql = "UPDATE users SET is_deleted = true WHERE id = ?")
 @Where(clause = "is_deleted = false")
 @Table(name = "users")

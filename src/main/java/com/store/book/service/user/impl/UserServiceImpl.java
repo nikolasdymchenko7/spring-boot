@@ -9,8 +9,11 @@ import com.store.book.model.User;
 import com.store.book.repository.role.RoleRepository;
 import com.store.book.repository.user.UserRepository;
 import com.store.book.service.user.UserService;
+import java.util.Optional;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -38,5 +41,15 @@ public class UserServiceImpl implements UserService {
         user.setRoles(Set.of(roleRepository.findRoleByRoleName(Role.RoleName.USER)));
         User savedUser = userRepository.save(user);
         return userMapper.toUserResponse(savedUser);
+    }
+
+    @Override
+    public Optional<User> getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null) {
+            String name = authentication.getName();
+            return userRepository.findByEmail(name);
+        }
+        return Optional.empty();
     }
 }
