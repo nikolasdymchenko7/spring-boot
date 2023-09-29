@@ -14,7 +14,6 @@ import com.store.book.model.User;
 import com.store.book.repository.book.BookRepository;
 import com.store.book.repository.cartitem.CartItemRepository;
 import com.store.book.repository.shoppingcart.ShoppingCartRepository;
-import com.store.book.repository.user.UserRepository;
 import com.store.book.service.shoppingcart.ShoppingCartService;
 import com.store.book.service.user.UserService;
 import jakarta.transaction.Transactional;
@@ -24,7 +23,6 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Service
 public class ShoppingCartServiceImpl implements ShoppingCartService {
-    private final UserRepository userRepository;
     private final BookRepository bookRepository;
     private final UserService userService;
     private final ShoppingCartRepository shoppingCartRepository;
