@@ -4,12 +4,14 @@ import com.store.book.dto.cartitem.CartItemDto;
 import com.store.book.dto.cartitem.CreateCartItemRequestDto;
 import com.store.book.dto.cartitem.UpdateCartItemRequestDto;
 import com.store.book.dto.shoppingcart.ShoppingCartDto;
+import com.store.book.model.User;
 import com.store.book.service.shoppingcart.ShoppingCartService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,17 +32,19 @@ public class ShoppingCartController {
     @PostMapping
     @Operation(summary = "Add new product",
             description = "Adding new product to shopping cart")
-    public CartItemDto addCartItem(@RequestBody @Valid CreateCartItemRequestDto requestDto) {
-
-        return shoppingCartService.addCartItem(requestDto);
+    public CartItemDto addCartItem(Authentication authentication,
+                                   @RequestBody @Valid CreateCartItemRequestDto requestDto) {
+        User user = (User) authentication.getPrincipal();
+        return shoppingCartService.addCartItem(user, requestDto);
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping
     @Operation(summary = "View shopping cart",
             description = "View cart items from the shopping cart")
-    public ShoppingCartDto findAllUserItemsFromShoppingCart() {
-        return shoppingCartService.findShoppingCartByUser();
+    public ShoppingCartDto findAllUserItemsFromShoppingCart(Authentication authentication) {
+        User user = (User) authentication.getPrincipal();
+        return shoppingCartService.findShoppingCartByUser(user.getId());
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
@@ -56,7 +60,9 @@ public class ShoppingCartController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/cart-items/{cartItemId}")
     @Operation(summary = "Delete book", description = "Delete book by id")
-    public void deleteCartItem(@PathVariable Long cartItemId) {
-        shoppingCartService.deleteCartItem(cartItemId);
+    public void deleteCartItem(Authentication authentication,
+                               @PathVariable Long cartItemId) {
+        User user = (User) authentication.getPrincipal();
+        shoppingCartService.deleteCartItem(user.getId(), cartItemId);
     }
 }

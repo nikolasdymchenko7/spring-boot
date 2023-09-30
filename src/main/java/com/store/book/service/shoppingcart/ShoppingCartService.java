@@ -4,14 +4,17 @@ import com.store.book.dto.cartitem.CartItemDto;
 import com.store.book.dto.cartitem.CreateCartItemRequestDto;
 import com.store.book.dto.cartitem.UpdateCartItemRequestDto;
 import com.store.book.dto.shoppingcart.ShoppingCartDto;
+import com.store.book.model.User;
+import org.springframework.security.core.Authentication;
 
 public interface ShoppingCartService {
-    ShoppingCartDto findShoppingCartByUser();
+    ShoppingCartDto findShoppingCartByUser(Long userId);
 
-    CartItemDto addCartItem(CreateCartItemRequestDto requestDto);
+    CartItemDto addCartItem(User user,
+                            CreateCartItemRequestDto requestDto);
 
     CartItemDto update(Long cartItemId,
                            UpdateCartItemRequestDto requestDto);
 
-    void deleteCartItem(Long cartItemId);
+    void deleteCartItem(Long userId ,Long cartItemId);
 }

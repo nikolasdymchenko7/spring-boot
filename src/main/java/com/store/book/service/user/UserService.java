@@ -8,6 +8,4 @@ import java.util.Optional;
 
 public interface UserService {
     UserResponseDto register(UserRegistrationRequestDto request) throws RegistrationException;
-
-    public Optional<User> getCurrentUser();
 }

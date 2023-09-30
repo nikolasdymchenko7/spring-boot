@@ -14,16 +14,19 @@ import com.store.book.model.User;
 import com.store.book.repository.book.BookRepository;
 import com.store.book.repository.cartitem.CartItemRepository;
 import com.store.book.repository.shoppingcart.ShoppingCartRepository;
+import com.store.book.repository.user.UserRepository;
 import com.store.book.service.shoppingcart.ShoppingCartService;
 import com.store.book.service.user.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
 @Service
 public class ShoppingCartServiceImpl implements ShoppingCartService {
     private final BookRepository bookRepository;
+    private final UserRepository userRepository;
     private final UserService userService;
     private final ShoppingCartRepository shoppingCartRepository;
     private final CartItemRepository cartItemRepository;
@@ -32,17 +35,15 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
     @Transactional
     @Override
-    public ShoppingCartDto findShoppingCartByUser() {
-        Long userId = userService.getCurrentUser().get().getId();
+    public ShoppingCartDto findShoppingCartByUser(Long userId) {
         ShoppingCart shoppingCart = getShoppingCartByUserId(userId);
-        ShoppingCartDto dto = shoppingCartMapper.toDto(shoppingCart);
         return shoppingCartMapper.toDto(shoppingCart);
     }
 
     @Transactional
     @Override
-    public CartItemDto addCartItem(CreateCartItemRequestDto requestDto) {
-        User user = userService.getCurrentUser().get();
+    public CartItemDto addCartItem(User user,
+                                   CreateCartItemRequestDto requestDto) {
         ShoppingCart shoppingCart = shoppingCartRepository.findShoppingCartById(user.getId())
                 .orElseGet(() -> registerNewShoppingCart(user));
 
@@ -68,10 +69,14 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     }
 
     @Override
-    public void deleteCartItem(Long cartItemId) {
-        User user = userService.getCurrentUser().get();
+    public void deleteCartItem(Long userId, Long cartItemId) {
+
         ShoppingCart shoppingCart = shoppingCartRepository
-                .findShoppingCartById(user.getId()).get();
+                .findShoppingCartById(userId)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Can't find shopping cart for the current user"
+                ));
+
         CartItem cartItem = shoppingCart.getCartItems()
                 .stream().filter(item -> item.getId().equals(cartItemId))
                 .findFirst()

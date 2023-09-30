@@ -27,7 +27,6 @@ public class CartItem {
     private Long id;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "shopping_cart_id", nullable = false)
-    @ToStringExclude
     private ShoppingCart shoppingCart;
     @ManyToOne
     @JoinColumn(name = "book_id", nullable = false)

@@ -42,14 +42,4 @@ public class UserServiceImpl implements UserService {
         User savedUser = userRepository.save(user);
         return userMapper.toUserResponse(savedUser);
     }
-
-    @Override
-    public Optional<User> getCurrentUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null) {
-            String name = authentication.getName();
-            return userRepository.findByEmail(name);
-        }
-        return Optional.empty();
-    }
 }
