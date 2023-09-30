@@ -9,11 +9,8 @@ import com.store.book.model.User;
 import com.store.book.repository.role.RoleRepository;
 import com.store.book.repository.user.UserRepository;
 import com.store.book.service.user.UserService;
-import java.util.Optional;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
