@@ -4,10 +4,13 @@ import com.store.book.dto.cartitem.CartItemDto;
 import com.store.book.dto.cartitem.CreateCartItemRequestDto;
 import com.store.book.dto.cartitem.UpdateCartItemRequestDto;
 import com.store.book.dto.shoppingcart.ShoppingCartDto;
+import com.store.book.model.ShoppingCart;
 import com.store.book.model.User;
 
 public interface ShoppingCartService {
     ShoppingCartDto findShoppingCartByUser(Long userId);
+
+    ShoppingCart findShoppingCartByUserId(Long userId);
 
     CartItemDto addCartItem(User user,
                             CreateCartItemRequestDto requestDto);
@@ -16,4 +19,6 @@ public interface ShoppingCartService {
                            UpdateCartItemRequestDto requestDto);
 
     void deleteCartItem(Long userId, Long cartItemId);
+
+    void clearShoppingCart(ShoppingCart shoppingCart);
 }
