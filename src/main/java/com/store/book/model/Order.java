@@ -19,10 +19,14 @@ import java.util.HashSet;
 import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 @Entity
 @Getter
 @Setter
+@SQLDelete(sql = "UPDATE orders SET is_deleted = true WHERE id = ?")
+@Where(clause = "is_deleted = false")
 @Table(name = "orders")
 public class Order {
     @Id
@@ -48,6 +52,9 @@ public class Order {
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private Set<OrderItem> orderItems = new HashSet<>();
+
+    @Column(name = "is_deleted")
+    private boolean isDeleted;
 
     public enum Status {
         CREATED,

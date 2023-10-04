@@ -7,6 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface CartItemRepository extends JpaRepository<CartItem, Long> {
     @Modifying
-    @Query("DELETE FROM CartItem c WHERE c.shoppingCart.id = :shoppingCartId")
+    @Query("UPDATE CartItem c SET c.isDeleted = true WHERE c.shoppingCart.id = :shoppingCartId")
     void deleteByShoppingCartIAndId(Long shoppingCartId);
 }

@@ -1,7 +1,6 @@
 package com.store.book.service.order.impl;
 
 import com.store.book.dto.orderitem.OrderItemResponseDto;
-import com.store.book.dto.orders.CreateOrderResponseDto;
 import com.store.book.dto.orders.OrderResponseDto;
 import com.store.book.dto.orders.UpdateOrderDto;
 import com.store.book.exception.EntityNotFoundException;
@@ -12,10 +11,8 @@ import com.store.book.model.Order;
 import com.store.book.model.OrderItem;
 import com.store.book.model.ShoppingCart;
 import com.store.book.model.User;
-import com.store.book.repository.cartitem.CartItemRepository;
 import com.store.book.repository.order.OrderRepository;
 import com.store.book.repository.orderitem.OrderItemRepository;
-import com.store.book.repository.shoppingcart.ShoppingCartRepository;
 import com.store.book.service.order.OrderService;
 import com.store.book.service.shoppingcart.ShoppingCartService;
 import jakarta.transaction.Transactional;
@@ -33,14 +30,12 @@ public class OrderServiceImpl implements OrderService {
     private final ShoppingCartService shoppingCartService;
     private final OrderRepository orderRepository;
     private final OrderItemRepository orderItemRepository;
-    private final CartItemRepository cartItemRepository;
-    private final ShoppingCartRepository shoppingCartRepository;
     private final OrderMapper orderMapper;
     private final OrderItemMapper orderItemMapper;
 
     @Transactional
     @Override
-    public CreateOrderResponseDto createOrder(User user) {
+    public OrderResponseDto createOrder(User user) {
         Order newOrder = new Order();
         newOrder.setUser(user);
         newOrder.setOrderDate(LocalDateTime.now());
@@ -61,18 +56,18 @@ public class OrderServiceImpl implements OrderService {
         orderRepository.save(newOrder);
         shoppingCartService.clearShoppingCart(shoppingCart);
 
-        return orderMapper.toCreateDto(newOrder);
+        return orderMapper.toDto(newOrder);
     }
 
     @Override
-    public UpdateOrderDto updateOrderStatus(Long orderId,
+    public OrderResponseDto updateOrderStatus(Long orderId,
                                             UpdateOrderDto orderDto) {
         Order orderFromDb = orderRepository.findById(orderId).orElseThrow(
                 () -> new EntityNotFoundException("Can't find order by id " + orderId));
         Order model = orderMapper.toModel(orderDto);
         orderFromDb.setStatus(model.getStatus());
 
-        return orderMapper.toUpdateDto(orderRepository.save(orderFromDb));
+        return orderMapper.toDto(orderRepository.save(orderFromDb));
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.store.book.controller;
 
 import com.store.book.dto.orderitem.OrderItemResponseDto;
-import com.store.book.dto.orders.CreateOrderResponseDto;
+import com.store.book.dto.orders.CreateOrderRequestDto;
 import com.store.book.dto.orders.OrderResponseDto;
 import com.store.book.dto.orders.UpdateOrderDto;
 import com.store.book.model.User;
@@ -31,8 +31,10 @@ public class OrderController {
     @Operation(summary = "New order", description = "Create a new order")
     @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping
-    CreateOrderResponseDto createOrder(Authentication authentication) {
+    OrderResponseDto createOrder(Authentication authentication,
+                                 @RequestBody CreateOrderRequestDto requestDto) {
         User user = (User) authentication.getPrincipal();
+        user.setShippingAddress(requestDto.getShippingAddress());
 
         return orderService.createOrder(user);
     }
@@ -40,7 +42,7 @@ public class OrderController {
     @Operation(summary = "Update order", description = "Update existing order")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PatchMapping("/{id}")
-    UpdateOrderDto updateOrderStatus(@PathVariable Long id,
+    OrderResponseDto updateOrderStatus(@PathVariable Long id,
                                      @RequestBody @Valid UpdateOrderDto orderDto) {
         return orderService.updateOrderStatus(id, orderDto);
     }
