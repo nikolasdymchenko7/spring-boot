@@ -14,9 +14,7 @@ import com.store.book.model.User;
 import com.store.book.repository.book.BookRepository;
 import com.store.book.repository.cartitem.CartItemRepository;
 import com.store.book.repository.shoppingcart.ShoppingCartRepository;
-import com.store.book.repository.user.UserRepository;
 import com.store.book.service.shoppingcart.ShoppingCartService;
-import com.store.book.service.user.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,8 +23,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class ShoppingCartServiceImpl implements ShoppingCartService {
     private final BookRepository bookRepository;
-    private final UserRepository userRepository;
-    private final UserService userService;
     private final ShoppingCartRepository shoppingCartRepository;
     private final CartItemRepository cartItemRepository;
     private final CartItemMapper cartItemMapper;
@@ -35,7 +31,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     @Transactional
     @Override
     public ShoppingCartDto findShoppingCartByUser(Long userId) {
-        ShoppingCart shoppingCart = getShoppingCartByUserId(userId);
+        ShoppingCart shoppingCart = findShoppingCartByUserId(userId);
         return shoppingCartMapper.toDto(shoppingCart);
     }
 
@@ -84,7 +80,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         cartItemRepository.delete(cartItem);
     }
 
-    private ShoppingCart getShoppingCartByUserId(Long userId) {
+    public ShoppingCart findShoppingCartByUserId(Long userId) {
         return shoppingCartRepository
                 .findShoppingCartById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("Can't "
@@ -93,7 +89,13 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
     private ShoppingCart registerNewShoppingCart(User user) {
         ShoppingCart shoppingCart = new ShoppingCart();
+        shoppingCart.setId(user.getId());
         shoppingCart.setUser(user);
         return shoppingCartRepository.save(shoppingCart);
+    }
+
+    @Override
+    public void clearShoppingCart(ShoppingCart shoppingCart) {
+        cartItemRepository.deleteByShoppingCartIAndId(shoppingCart.getId());
     }
 }
